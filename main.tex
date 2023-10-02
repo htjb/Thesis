@@ -1,0 +1,164 @@
+\documentclass[a4paper,11pt,twoside,extrafontsizes,oldfontcommands]{memoir}
+\usepackage[utf8]{inputenc}
+\usepackage[useregional]{datetime2}
+
+\usepackage{thesis}
+\usepackage{lscape}
+\usepackage{tabularx}
+\usepackage[sort&compress]{natbib}
+\usepackage{cleveref}
+\usepackage{caption}
+%\usepackage{amssymb}	% Extra maths symbols
+\usepackage{multirow}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{tikz}
+\newcommand{\TikZ}{Ti\textit{k}Z\xspace}
+\newcommand{\mean}[2][]{\left\langle#2\right\rangle_{#1}}
+\usepackage{geometry}
+\geometry{margin=2cm}
+\usepackage{subcaption}
+\usepackage{comment}
+\setcounter{tocdepth}{3}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\usepackage{cornerflip}
+\OddFlipon
+\EvenFlipoff
+
+\newcommand{\name}{\textsc{globalemu}}
+\newcommand{\cmGEM}{\textsc{21cmGEM}}
+\newcommand{\maxsmooth}{\textsc{maxsmooth}}
+\newcommand{\cvxopt}{\textsc{CVXOPT}}
+\newcommand{\multinest}{\textsc{MultiNest}}
+\newcommand{\scipy}{\textsc{Scipy}}
+
+\crefformat{figure}{Fig.~#2#1#3}
+\crefformat{equation}{equation~(#2#1#3)}
+\crefformat{section}{section~#2#1#3}
+\crefformat{table}{Tab.~#2#1#3}
+\crefformat{appendix}{App.~#2#1#3}
+\crefmultiformat{figure}{Figs.~#2#1#3}{~and~#2#1#3}%
+    {,~#2#1#3}{,~#2#1#3}
+\crefrangeformat{figure}{Figs.~(#3#1#4--#5#2#6)}
+
+\newcommand{\mynote}[1]{\todo[size=\small,inline,color=green!40]{#1}}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+
+\newcommand{\mysection}[1]{%
+    \section*{#1}%
+    \addcontentsline{toc}{section}{#1}%
+    \markright{#1}%
+}
+
+\begin{document}
+
+\input{titlepage}
+
+\tableofcontents
+\pagebreak
+
+\mysection{Declaration}
+
+This thesis is the result of my own work and includes nothing which is the outcome of work done in collaboration except as declared in the preface and specified in the text.
+
+The antenna beam pattern shown in \cref{fig:chromaticity} was provided by John Cumner and Dominic Anstey.
+
+\Cref{sec:marginal_likelihood} in \cref{ch:margarine} was largely written by Will Handley for \cite{margarine_maxent}, but translated into code and visually illustrated in \cref{fig:pipeline} and \cref{fig:pipelineB} by myself.
+
+The top panel of \cref{fig:igm_params} was conceptualised by Stefan Heimersheim. \Cref{sec:power_spec_emulation} and \cref{sec:igm_temperature_emulation} in \cref{ch:hera_saras3} were first drafted by Stefan Heimersheim for \cite{Bevins_hera_saras3_2023} and edited by myself. Similarly, \cref{sec:other_interferometers} and \cref{fig:other_interferometers} were first drafted by Irene Abril-Cabezas for \cite{Bevins_hera_saras3_2023} and edited by myself. \Cref{sec:other_interferometers} is adapted from work submitted for Irene Abril-Cabezas master’s degree.
+
+The thesis is not substantially the same as any work that has already been submitted before for any degree or other qualification except as declared in the preface and specified in the text.
+
+It does not exceed the prescribed word limit for the Department of Physics Degree Committee.
+
+\mysection{Summary}
+
+The work presented in this thesis focuses on data analysis of sky-averaged (global) 21-cm experiments and is based on seven first author papers. The topic is introduced in Part I, with the scientific background of the global 21-cm signal, the challenges faced by experiments aiming to detect the signal and current experimental techniques and results being outlined. Part II introduces a series of data analysis tools that have been developed over the past few years, and Part III illustrates the application of these tools to real data sets with the aim to constrain the astrophysics of the early universe.
+
+In Part II, \cref{ch:maxsmooth} is adapted from \citep[Bevins et al. 2021a,][]{Bevins_maxsmooth_2021} and discusses the development of an efficient algorithm for fitting functions with constrained derivatives, and consequently smooth properties, to data from global 21-cm experiments as a model for the smooth synchrotron and free-free Galactic and extragalactic emission. We demonstrate the application of Maximally Smooth Functions~(MSFs) to data from two different global \mbox{21-cm} experiments, EDGES and LEDA. \Cref{ch:globalemu} is based on \citep[Bevins et al. 2021b,][]{Bevins_globalemu_2021} and outlines a novel 21-cm signal emulator that significantly improves on the accuracy and runtime of the previous state-of-the-art. Finally, \cref{ch:margarine} is adapted from \citep[Bevins et al. 2022b,][]{margarine_neurips} and \citep[Bevins et al. 2022c,][]{margarine_maxent} which outline a framework for performing marginal Bayesian analysis and efficiently combining the constraining power of different data sets. In this chapter, we demonstrate the application of the code \textsc{margarine} to the combination of real data from Planck and DES.
+
+In Part III, \cref{ch:saras2} details the application of a variant of MSFs and the neural network signal emulator, \textsc{globalemu}, described in \cref{ch:globalemu}, to data from SARAS2 and is based on \citep[Bevins et al. 2022a,][]{Bevins_SARAS2_2022}. It illustrates the application of Bayesian Analysis to data from 21-cm experiments, a concept which is furthered in the following chapters, and an approach to deal with unknown systematics in data sets. This was the first time that systematics have been modelled alongside the sky-averaged 21-cm signal to derive constraints on the first galaxies. The work showed that systematics do not have to be a limiting factor in our data analysis, and pioneered concepts key to the Cambridge-based REACH experiment. \Cref{ch:saras3} is adapted from \citep[Bevins et al. 2022d,][]{Bevins_saras3_2022} and is concerned with the derivation of constraints on the properties of some of the first galaxies to form in the history of the Universe at much higher redshifts than in the previous chapter using Bayesian analysis and \textsc{globalemu}. This work produced the first limits on the properties of galaxies and star formation in galaxies at $z=20$. This is followed by the application of \cref{ch:margarine} to data from the global 21-cm signal experiment SARAS3 and 21-cm power spectrum experiment HERA adapted from \citep[Bevins et al. 2023,][]{Bevins_hera_saras3_2023} in \cref{ch:hera_saras3}. This was the first time a joint analysis of interferometric and global signal 21-cm data has been performed, and through the combination of the constraints from the different data sets the limits in the previous chapter are further advanced.
+
+In Part IV, I detail future work plans including the application of Bayesian techniques to data from upcoming moon based missions for the derivation of constraints on key cosmological parameters, the future analysis of data from REACH and extensions to the work in \cref{ch:margarine}. I follow this with conclusions. 
+
+\mysection{Acknowledgements}
+
+Throughout my life, I have been lucky enough to have been supported by loving family members, a great group of friends and fantastic academic mentors. Without all of these people this thesis would not have happened, and I am eternally grateful to all. To those I have missed, I apologise.
+
+Thanks first to Anna Scaife without whom I do not believe I would have reached this point. Your encouragement and support through my undergraduate study and Masters degree led me to pursue a career in academic research, for which I am grateful beyond words.
+
+To Eloy de Lera Acedo, Anastasia Fialkov and Will Handley. Thank you for your continued patience, your guidance over the course of my PhD, your trust and your advice. I could not have asked for a better set of supervisors, and I hope one day that I can pass the advice and knowledge you have given me onto my own students.
+
+To Lincoln Greenhill, thank you for sharing data from LEDA with me and working with me on the corresponding analysis. Similarly, thank you to Ravi Subrahmanyan and Saurabh Singh for sharing data from SARAS2 and SARAS3 with me. This PhD thesis would be far shorter without your willingness and trust.
+
+To the members of the REACH collaboration. Thank you for creating an exciting and welcoming environment to perform research in and thank you for all the advice.
+
+To my office mates. Thanks particularly to Dominic Anstey, Thomas Gessey-Jones, John Cumner and Stefan Heimersheim for patiently discussing the 21-cm signal, statistics and antenna design with me.
+
+To Irene Abril-Cabezas and Karla Boxall. Thanks for being great friends and for the constant support.
+
+To mum, dad and Reg for the unwavering emotional support, care and excitable tail wagging through the good and the bad. This one really is for you.
+
+To my brother Howard for the tech support and enthusiastic discussions about programming and machine learning. To my brothers Joe, Sam and my sister Liz for their constant support and belief in me.
+
+Fianlly, to my examiners, Sandro Tachella and Jackie Hewit. Thanks for the helpful discussion!
+
+\part{Introduction}
+
+\chapter{Introduction}
+\label{ch:introduction}
+\include{introduction/intro}
+
+\part{Data Analysis Toolbox}
+
+In the following three chapters, we introduce a series of novel data analysis tools designed to improve the prospects of detecting the 21-cm signal. In \cref{ch:maxsmooth}, we discuss a foreground modelling tool, \maxsmooth, that uses quadratic programming to model the smooth components of data from global or sky-averaged 21-cm signal experiments. The chapter is based on the first author paper \cite{Bevins_maxsmooth_2021}, which was published in Monthly Notices of the Royal Astronomical Society, and aims to address the issues raised in \cref{sec:foregrounds}.
+
+We then describe a novel neural network based (see \cref{sec:neural_networks}) global 21-cm signal emulator called \name~which improved on the previous state-of-the-art emulator by a factor of two in accuracy and 102 in runtime. The network uses a physically motivated preprocessing of the training data, comprised of a series of signals from semi-numerical simulations discussed in the introduction, and reparameterizes the network to take the independent variable, redshift or frequency, as an input alongside the physical parameters describing the signal. The chapter is based on the first author paper \cite{Bevins_globalemu_2021} published in Monthly Notices of the Royal Astronomical Society.
+
+Finally, in \cref{ch:margarine}, we introduce and discuss a machine learning based preprocessing tool to analyse the outputs of Bayesian analysis pipelines called \textsc{margarine}. We demonstrate a number of applications of this tool, which performs density estimation with Kernel Density Estimators and Normalising Flows (see \cref{sec:neural_networks}), such as the calculation of marginal Bayesian statistics and the efficient combination of constraints from different data sets on the same parameters. The work is based on two first author papers \cite{margarine_maxent, margarine_neurips} the first of which was published as proceedings for the 41st International Conference on Bayesian and Maximum Entropy methods in Science and Engineering.
+
+\chapter{\textsc{maxsmooth}}
+\label{ch:maxsmooth}
+
+\include{maxsmooth/maxsmooth}
+
+\chapter{\textsc{globalemu}}
+\label{ch:globalemu}
+\include{globalemu/emulator}
+
+\chapter{\textsc{margarine}}
+\label{ch:margarine}
+\include{margarine/margarine_mnras_plus}
+
+\part{Applications to Real Data}
+
+In this section, we apply the tools outlined in the previous chapters to real data from the global 21-cm signal experiments SARAS2 and SARAS3 and the power spectrum experiment HERA. The work builds on the current experimental results outlined in \cref{sec:current_results} and makes significant use of Bayesian analysis techniques outlined in \cref{sec:bayesian_inference_intro}.
+
+In \cref{ch:saras2}, we analyse data from the SARAS2 instrument in the redshift range $z\approx7-12$ corresponding to the epoch of reionization. We identify the presence of a sinusoidal systematic in the data and model this alongside a maximally smooth foreground (see \cref{ch:maxsmooth}) and several different signal models which are emulated with \name~(see \cref{ch:globalemu}). The work is based on the first author paper \cite{Bevins_SARAS2_2022} published in Monthly Notices of the Royal Astronomical Society.
+
+We follow this with an analysis of data from the SARAS3 instrument corresponding to $z\approx 15-25$ and the cosmic dawn when the first stars form. In this work, we produce the best constraints to date on the properties of the first stars using emulation of semi-numerical signals with \name. This chapter is based on the first author paper \cite{Bevins_saras3_2022} which was published in Nature Astronomy.
+
+Finally, in \cref{ch:hera_saras3}, we demonstrate, using \textsc{margarine}~(see \cref{ch:margarine}), how a combined analysis of data from the power spectrum experiment HERA and data from the global signal experiment SARAS3 can lead to improved constraints in comparison to analysis of the individual data sets. This chapter is based on \cite{Bevins_hera_saras3_2023}.
+
+\chapter{Constraints on the properties of galaxies between $z\approx7-12$ with SARAS2}
+\label{ch:saras2}
+\include{saras2/saras2}
+
+\chapter{Constraints on galaxies at $z\approx 15 - 25$ with SARAS3}
+\label{ch:saras3}
+\include{saras3/saras3}
+
+\chapter{Combining constraints from HERA and SARAS3}
+\label{ch:hera_saras3}
+%\include{margarine/margarine_planck_des}
+\include{joint_constraints/joint_constraints}
+
+\part{Future work and conclusion}
+
+\label{ch:futrue_plans}
+\include{future/future_conclusions}
+
+\bibliographystyle{unsrt}
+\bibliography{journals,ref}
+
+\end{document}

@@ -1,0 +1,102 @@
+%==============================================================================%
+% cornerflip.sty                                                               %
+% --------------                                                               %
+%                                                                              %
+% LaTeX package for "flip book" images at bottom right of odd and/or           %
+% even numbered pages. Changes "plain" and "headings" pagestyles               %
+% footers (assumed to be empty) to include (numbered) images, looping          %
+% back to the first after a certain number.                                    %
+%                                                                              %
+% The default parameters set here are:                                         %
+%                                                                              %
+%   \def\OddFlipname{oddflip}     - base name of (odd) images                  %
+%   \setcounter{OddFliploop}{10}  - number of (odd) images to loop over        %
+%   \OddFlipright=5mm             - right shift for (odd) images               %
+%   \OddFlipdown=15mm             - down shift for (odd) images                %
+%   \OddFlipwidth=20mm            - required width of (odd) images             %
+%                                                                              %
+%   \def\EvenFlipname{evenflip}   - base name of (even) images                 %
+%   \setcounter{EvenFliploop}{10} - number of (even) images to loop over       %
+%   \EvenFlipleft=25mm            - left shift for (even) images               %
+%   \EvenFlipdown=15mm            - down shift for (even) images               %
+%   \EvenFlipwidth=20mm           - required width of (even) images            %
+%                                                                              %
+% So that images oddflip1.xxx, oddflip2.xxx ... oddflip10.xxx (with .xxx       %
+% = .eps for LaTeX, or .pdf for pdfLaTeX) are used for odd pages. Similarly    %
+% evenflip1.xxx etc. These numbers/dimensions/image filenames can be set as    %
+% needed after loading this .sty (e.g. different shifts may be needed          %
+% depending on size of the images).                                            %
+%                                                                              %
+% Then use:                                                                    %
+%                                                                              %
+%   \OddFlipon and \OddFlipoff to switch odd page flipbook on/off              %
+%   \EvenFlipon and \EvenFlipoff to switch even page flipbook on/off           %
+%                                                                              %
+% in the main .tex files.                                                      %
+%                                                                              %
+% Current offsets designed for my thesis template, see:                        %
+%                                                                              %
+%       http://www.mrao.cam.ac.uk/~dag/THESIS/                                 %
+%                                                                              %
+% Dave Green -- 2019 June 24th                                                 %
+%------------------------------------------------------------------------------%
+\ProvidesPackage{cornerflip}[2019/06/24 Version 1.0 (Dave Green)]
+%
+\newcounter{OddFlip}
+\newcounter{EvenFlip}
+\newcounter{OddFliploop}
+\newcounter{EvenFliploop}
+%
+\newdimen\OddFlipright
+\newdimen\EvenFlipleft
+\newdimen\OddFlipdown
+\newdimen\EvenFlipdown
+%
+\newdimen\OddFlipwidth
+\newdimen\EvenFlipwidth
+%
+\def\OddFlipon{\setcounter{OddFlip}{0}
+             \makeoddfoot{plain}{}{}{\OddFlipimage}
+             \makeoddfoot{headings}{}{}{\OddFlipimage}}
+\def\OddFlipoff{\makeoddfoot{plain}{}{}{}
+              \makeoddfoot{headings}{}{}{}}
+%
+\def\EvenFlipon{\setcounter{EvenFlip}{0}
+             \makeevenfoot{plain}{\EvenFlipimage}{}{}
+             \makeevenfoot{headings}{\EvenFlipimage}{}{}}
+\def\EvenFlipoff{\makeevenfoot{plain}{}{}{}
+              \makeevenfoot{headings}{}{}{}}
+%
+\def\OddFlipimage{\hbox to 0pt{\hskip\OddFlipright
+  \vbox to 0pt{\vss\hbox{\OddFlipbox}\vskip-\OddFlipdown}\hss}}
+%
+\def\EvenFlipimage{\hbox to 0pt{\hskip-\EvenFlipleft
+  \vbox to 0pt{\vss\hbox{\EvenFlipbox}\vskip-\EvenFlipdown}\hss}}
+%
+\def\OddFlipbox{\stepcounter{OddFlip}
+   \ifnum\the\value{OddFlip}>\the\value{OddFliploop}
+      \setcounter{OddFlip}{1}
+   \fi
+   \includegraphics[width=\OddFlipwidth]{\OddFlipname\the\value{OddFlip}}}
+%
+\def\EvenFlipbox{\stepcounter{EvenFlip}
+   \ifnum\the\value{EvenFlip}>\the\value{EvenFliploop}
+      \setcounter{EvenFlip}{1}
+   \fi
+   \includegraphics[width=\EvenFlipwidth]{\EvenFlipname\the\value{EvenFlip}}}
+%
+% Set default numbers/dimensions/image file names...
+%
+\def\OddFlipname{flipbook_bannana/fig_}
+\setcounter{OddFliploop}{159}
+\OddFlipright=0mm
+\OddFlipdown=12mm
+\OddFlipwidth=20mm
+%
+\def\EvenFlipname{flipbook_bannana/fig_}
+\setcounter{EvenFliploop}{159}
+\EvenFlipleft=25mm
+\EvenFlipdown=15mm
+\EvenFlipwidth=20mm
+%------------------------------------------------------------------------------%
+\endinput

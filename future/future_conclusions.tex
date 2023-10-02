@@ -1,0 +1,86 @@
+\chapter{Future work and Conclusion}
+
+\setcounter{section}{0}
+\renewcommand\thefigure{\arabic{chapter}.\arabic{figure}}
+\renewcommand\thetable{\arabic{chapter}.\arabic{table}}
+\renewcommand\thesubsection{\arabic{chapter}.\arabic{section}.\arabic{subsection}}
+\renewcommand\thesection{\arabic{chapter}.\arabic{section}}
+\setcounter{figure}{0}
+\setcounter{table}{0}
+
+\section{Future work}
+
+\subsection{REACH}
+
+In the coming year, deployment, commissioning and the first season of data collection from the Cambridge based REACH experiment is expected to have taken place. As an active member of the collaboration, I will be involved in the data analysis and many of the techniques outlined in this thesis will be applied to the data;
+
+\begin{itemize}
+    \item The primary contribution from this thesis to the data analysis for REACH will be \cref{ch:globalemu} on the emulation of the global 21-cm signals. The signal emulator, \textsc{globalemu}, will be an integral part of the forward modelling in the REACH pipeline and allow the collaboration to derive key astrophysical information about the early universe. The emulator needs to be regularly updated to maintain consistency with the evolving state-of-the-art theoretical modelling, and was designed with this in mind. In practice, we will be able to train \textsc{globalemu} on different sets of models from semi-numerical and 1D radiative transfer codes such as \textsc{21cmFAST} \cite{Mesinger2011}, \textsc{ARES} \cite{ARES_sim}, \textsc{GRIZZLY} \cite{GharaGRIZZLYa,GharaGRIZZLYb} and the code used throughout this thesis to allow us to compare parameter constraints on each model or in the event of a detection check for consistency in the recovered physics.
+    \item The work in \cref{ch:saras2} and \cref{ch:saras3}, detailing the analysis of the SARAS2 and SARAS3 data sets, helped to develop the parameter inference framework that will be applied to the data from REACH. The former work demonstrated that systematics if present in the data do not necessarily prevent our ability to do useful physics, which is a key principle behind REACH and was discussed in \cite{de_lera_acedo_reach_2022} and \cite{Scheutwinkel2022b}.
+    \item \Cref{ch:margarine} and \cref{ch:hera_saras3} set out a marginal Bayesian framework which will allow the results from REACH to be easily combined with results from other probes of the infant Universe such as the 21-cm power spectrum and constraints on the CMB optical depth from Planck. Forecasts for such an analysis are currently been worked on by members of the collaboration (see Sims et al. in prep 2023a, b).
+    \item The REACH analysis will primarily be performed via the forward modelling pipeline discussed in \cite{Anstey_REACH_2021, Anstey_antenna_2022, Anstey_lst_2022, Shen_ionosphere_2022, Scheutwinkel2022a, Scheutwinkel2022b} and via a Singular Value Decomposition pipeline based on the work presented in \cite{Tauscher2018} and subsequent works and applied to REACH in \cite{Saxena2022}. In principle, an additional standalone analysis using an EDGES style chromaticity correction and \textsc{maxsmooth} could be performed. Although there are limitations to the EDGES style chromaticity correction, discussed briefly in \cref{ch:introduction}, it may be sufficient to model the dominant chromatic structure in the data and in combination with \textsc{maxsmooth} produce residuals that can be used to constrain the properties of the first galaxies via the 21-cm signal. Future work could also be performed to extend the EDGES-style correction to fit for errors in the sky model and beam directivity in tandem with the 21-cm signal \citep[e.g.][]{Sims2022_beam}.
+\end{itemize}
+
+\subsection{Cosmology forecasts from the Dark Ages}
+
+Many of the techniques employed in this thesis can also be applied to studies of the 21-cm signal from other experiments and from the Dark Ages. The Dark Ages signal is of particular interest because it is independent of astrophysics, strongly dependent on Cosmology and potentially dependent on dark matter. As such, it can act as a very high redshift probe of the baryon, $\Omega_b$, and dark matter, $\Omega_c$, densities.
+
+In principle, many of the techniques developed in this thesis and applied in \cref{ch:saras2} and \cref{ch:saras3} can be used to make predictions about the constraining power of a detection of the dark ages signal on key cosmological parameters. Future work is planned to do this for the Cambridge based experiment CosmoCube and to assess whether the constraints from the dark ages signal could break degeneracies in or improve the constraints from Planck and DES, for example, using \textsc{margarine}.
+
+\subsection{Breaking model dependencies and likelihood reweighting}
+
+Extensions to \textsc{margarine} are also planned to improve the accuracy of the density estimation and extend the code to emulate densities at discrete steps between the prior and posterior from the original analysis.
+
+Synergies between \textsc{margarine} and likelihood reweighting can also be explored in the future. Likelihood reweighting has been used in the study of Gravitational Waves to translate posterior samples for model A with a fast likelihood to the posterior for model B with a slower likelihood using the following relationship
+\begin{equation}
+    P_B(\theta|D, M_B) = P_A(\theta|D, M_A) \frac{L_B(\theta|D, M_B)}{L_A(\theta|D, M_A)}
+    \label{eq:likelihood-reweighting}
+\end{equation}
+where we have assumed the same prior for model A and model B on the same set of parameters \cite{Payne2019}.
+
+The idea is then that you can fully sample model A with MCMC or Nested Sampling, and then you only need to call the slow likelihood a few thousand times rather than a few tens of thousands of times to millions of times. In practice, however, this approach can produce too few samples on $P_B$ for it to be accurately described. One way around this is to use \textsc{margarine} to emulate the posterior distribution and likelihood for model A which would allow you to generate an arbitrary number of samples on the posterior $P_B$.
+
+One current issue facing the field of 21-cm cosmology is the number of different semi-numerical simulations and 1D radiative transfer codes modelling the 21-cm signal in circulation and being applied to different data sets. This makes it difficult to directly compare the astrophysical constraints from one analysis to those from another that used a different modelling of the 21-cm signal. Breaking this model dependency is essential for validating conclusions across different experimental efforts.
+
+The degeneracy appears in two forms. Firstly, across contemporary analyses that use different simulations with different parametrisations of the astrophysics in the early Universe. Secondly, in the comparison of contemporary and historical analyses where it is more likely that two data sets were analysed with variants of the same simulation parameterised by the same quantities but where the contemporary work relies on a slightly modified physical picture. 
+
+Likelihood reweighting will allow us to begin to break the second of these degeneracies. For example, imagine that the analysis in \cref{ch:saras2} was performed with a model that propagated Lyman-$\alpha$ photons in straight lines and between then and the publication of \cref{ch:saras3} the models were updated to include the scattering of Lyman-$\alpha$ photons. We can refer to the first model as model A and the second as model B, and we want to compare and maybe combine the constraints from SARAS2 and SARAS3 antennas on model B. We therefore need the posterior $P_B(\theta|D_\mathrm{SARAS2}, M_B)$ but we have $P_A(\theta|D_\mathrm{SARAS2}, M_A)$ and we can translate between the two using \cref{eq:likelihood-reweighting}. 
+
+\subsection{Exploring synergies between 21-cm cosmology and other probes of the infant Universe}
+
+Finally, it will become increasingly important, as better data becomes available, to pursue synergies between 21-cm cosmology and other probes of the infant Universe, such as observations of distant galaxies with JWST. While JWST and experiments like REACH and HERA do not directly target the same signals, they target similar periods in cosmic history and observations of individual galaxies and the 21-cm signal can be used to constrain quantities like the neutral fraction of hydrogen as a function of redshift, $x_{HI}(z)$. 
+
+In practice, we can use neural networks to learn the relationship between parameters like the star formation rate and the CMB optical depth and the neutral fraction of hydrogen, as illustrated in \cref{ch:globalemu}. This allows us to translate the posterior from HERA and SARAS3 for the parameters describing the 21-cm signal outlined in the previous chapter into a posterior on the redshift of reionization, $z_\mathrm{EoR}$ when $x_{HI} \approx 0.5$ and the duration of reionization $\Delta z = z(x_{HI} = 0.95) - z(x_{HI} = 0.05)$. Learning this distribution with \textsc{margarine} in turn gives us access to $\log(\mathcal{P}_\mathrm{H+S}(\theta|D, M))$ where $\theta = \{\Delta z, z_\mathrm{EoR}\}$. Similarly, we can use observations of Lyman-$\alpha$ absorption in galaxy spectra from JWST to begin to constrain the properties of the epoch of reionization \cite{Curtis_Lake2022}. We can imagine deriving similar posterior emulators using \textsc{margarine} for individual galaxies $\log\mathcal{P}_\mathrm{JWST, GAL-1}(\theta|D, M)$ and defining a combined likelihood
+\begin{equation}
+    \log \mathcal{L}(\theta) = \log \mathcal{P}_\mathrm{H+S}(\theta|D, M) + \sum_i \log\mathcal{P}_\mathrm{JWST, GAL-i}(\theta|D, M),
+\end{equation}
+where the sum is over observations of different galaxies. In practice, we would sample this likelihood by sampling the astrophysical parameters describing star formation rates, radio and X-ray luminosities and the CMB optical depth and translating the resultant samples to estimates of $z_\mathrm{EoR}$ and $\Delta z$ using the neural network emulator for $x_{HI}$ to be passed to the \textsc{margarine} emulators inside our likelihood function.
+
+Similar approaches can be taken to relate constraints on UV luminosity functions for example from JWST and 21-cm probes using \textsc{margarine} and I intend to investigate this in the future.
+
+\section{Conclusion}
+
+In this thesis, we have outlined the development of several novel techniques and tools for data analysis in 21-cm cosmology. Each has applications outside the field, which are generally alluded to in the relevant chapters. 
+
+In \cref{ch:maxsmooth} we describe an algorithm for fitting smooth functions to data sets and discuss this in the context of 21-cm cosmology. However, we note that this can be applied to any field where the separation of non-smooth structure from smooth data is crucial. 
+
+In \cref{ch:globalemu} we discuss the development of a novel neural network 21-cm signal emulator and demonstrate its accuracy and speed. The preprocessing techniques, in particular the outlined resampling, can be applied to many fields, as can inputting the independent variable into the network to produce small and efficient emulators. One example is the emulation of the CMB power spectrum.
+
+In \cref{ch:margarine} we build the framework to perform marginal Bayesian statistics and demonstrate the calculation of key statistical quantities on sub spaces of larger distributions. This framework has numerous applications in any field where Bayesian inference is employed.
+
+In \cref{ch:saras2}, \cref{ch:saras3} and \cref{ch:hera_saras3} we apply these tools to data from the SARAS2, SARAS3 and HERA. In doing so, we demonstrate several key results;
+
+\begin{itemize}
+    \item Systematics do not need to be a limiting factor in our ability to constrain the properties of the infant Universe, if appropriately recovered in the data and modelled. Although we note that in the event of a detection, the systematics need to be physically well understood and modelled for that detection to be accepted by the community.
+    \item We can combine constraints to marginalise over the uncertainty in systematic modelling based on the evidence for each fit.
+    \item Combining constraints across different data sets looking for the global 21-cm signal and the power spectrum leads to significant improvement in our understanding of the first galaxies and improvements in our constraints on the magnitude of each signal.
+    \item Combining constraints from data sets across a wide range of redshifts improves our knowledge of the history of the infant Universe in comparison to extrapolations of constraints outside narrow redshift ranges.
+\end{itemize}
+
+The SARAS3 constraints are the first of their kind at such high redshift and although weak we are able to disfavour at 68\% confidence galaxies with high star formation efficiencies above $3\%$ in combination with minimum halo masses of less than $\approx 9\times 10^{8}$ solar masses at $z=20$. In addition, we disfavour scenarios where galaxies have high radio luminosities per star formation rate in combination with low X-ray luminosities per star formation rate at $z=20$. These limits are further improved through the combination of constraints from HERA and SARAS3.
+
+Throughout the thesis, we draw several conclusions about the absorption feature reported by the EDGES collaboration \cite{Bowman_edges_2018}. We find in \cref{ch:maxsmooth}, for example, that the data contains a sinusoidal systematic in line with the findings of \cite{Hills2018, Singh_edges_2019, Bradley_EDGES_2019, Sims2020}. We also find in \cref{ch:hera_saras3} that while the HERA and SARAS3 data individually allow for physically motivated models, that have excess radio backgrounds above the CMB from radio galaxies, with depths consistent with the EDGES absorption feature the combination of the constraints from the two experiments rules these signals out with greater than 2$\sigma$ significance.
+
+In the thesis, we explore a series of models with excess radio backgrounds above the CMB produced separately by radio galaxies and from a high redshift synchrotron source. While both models are partially motivated by the EDGES absorption feature, there is some indication of an excess radio background from measurements by ARCADE2 \cite{fixsen_arcade_2011} and LWA \cite{dowell_radio_2018} The modelling of the excess radio background in the ARCADE2 and LWA work is similar to that used here for the high redshift synchrotron excess. As such, we compare our constraints on this model of the excess from SARAS3 in \cref{ch:saras3} in the context of constraints from HERA. We find that while our results from SARAS3 disfavour the LWA and ARCADE2 measurements at greater than 68\% confidence, there is still a non-zero probability that the ARCADE2 and LWA measurements are genuine excesses despite concerns about the foreground modelling in those works \cite{Subrahmanyan2013}. We also find that our constraints on this radio background model are not as strong as those from HERA. However, we caution that our constraints are at different redshifts to HERA and the measurements from LWA and ARCADE2 meaning that each instrument may be probing a different population of sources.
+
+The work in this thesis advances the library of available tools for 21-cm analysis, effectively demonstrates the application of Bayesian inference in the field, and advances our knowledge of the first galaxies.
